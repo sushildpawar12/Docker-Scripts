@@ -1,0 +1,20 @@
+version: '3.7'
+services:
+ swagger-editor:
+    container_name: swagger-editor
+    image: swaggerapi/swagger-editor
+    ports:
+      - "8001:8080"
+
+  swagger-ui:
+    container_name: swagger-ui
+    image: swaggerapi/swagger-ui
+    ports:
+      - "8002:8080"
+    volumes:
+      - /home/sushilpawar/mydocker/DockerVolume/swagger/apispec:/usr/share/nginx/html/apispec
+    environment:
+      URLS_PRIMARY_NAME: "SOA-API"
+      URLS: "[{ url: 'apispec/soaapi.yaml', name: 'SOA-API'},
+              { url: 'apispec/osbapi.yaml', name: 'OSB-API'},
+            ]"
