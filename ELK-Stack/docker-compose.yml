@@ -1,0 +1,51 @@
+version: '3.6'
+services:
+  Elasticsearch:
+    image: elasticsearch:7.17.8
+    container_name: elasticsearch
+    restart: always
+    volumes:
+    - /home/sushilpawar/mydocker/DockerVolume/ElasticsearchVolume:/usr/share/elasticsearch/data/
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      discovery.type: single-node    
+    ports:
+    - '7034:9200'
+    - '7033:9300'
+    networks:
+      - SOANet
+
+  Logstash:
+    image: logstash:7.17.8
+    container_name: logstash
+    restart: always
+    volumes:
+    - /home/sushilpawar/mydocker/DockerVolume/LogstashVolume:/logstash_dir
+    command: logstash -f /logstash_dir/logstash.conf 
+    depends_on:
+      - Elasticsearch
+    ports:
+    - '7032:9600'
+    - '7035:5044'
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"    
+    networks:
+      - SOANet
+
+  Kibana:
+    image: kibana:7.17.8
+    container_name: kibana
+    restart: always       
+    ports:
+    - '7031:5601'
+    environment:
+      - ELASTICSEARCH_URL=http://192.168.2.179:7034  
+    depends_on:
+      - Elasticsearch  
+    networks:
+      - SOANet
+
+networks:
+  SOANet:
+    external: true
+
